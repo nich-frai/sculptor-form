@@ -1,29 +1,29 @@
 {
-	"extends": "@tsconfig/svelte/tsconfig.json",
-	"compilerOptions": {
-		"target": "ES2022",
-		"lib": ["DOM", "ESNext"],
-		"module": "ES2022",
+  "extends": "@tsconfig/svelte/tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["DOM", "ESNext"],
+    "module": "ES2022",
 
-		"useDefineForClassFields": true,
-		"resolveJsonModule": true,
+    "useDefineForClassFields": true,
+    "resolveJsonModule": true,
 
-		"outDir": "dist",
+    "outDir": "dist",
 
-		"moduleResolution": "node",
-		"baseUrl": ".",
-		"paths": {
-			"@sculptor/form" : ["./src/index.ts"]
-		},
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@sculptor/form": ["./src/index.ts"]
+    },
 
-		"strict": true,
+    "strict": true,
 
-		"allowSyntheticDefaultImports": true,
-		"isolatedModules": true,
-		"importsNotUsedAsValues": "error",
+    "allowSyntheticDefaultImports": true,
+    "isolatedModules": true,
+    "importsNotUsedAsValues": "error",
 
-		"skipLibCheck": true,
-		"skipDefaultLibCheck": true,
-	},
-	"include": ["src/**/*.ts", "src/**/*.svelte"]
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.svelte"]
 }
