@@ -11,7 +11,8 @@
   export let placeholder: string = "";
   export let required: boolean = true;
   export let pattern: string | undefined = undefined;
-
+  export let errors : string[] = [];
+  
   const controller = getContext<FormController>("form-controller");
   let inputEl: HTMLInputElement;
 
@@ -51,6 +52,12 @@
     on:invalid
   />
   <slot name="after-input" />
+
+  {#if errors.length > 0}
+    <span slot="error" class="display-errors">
+
+    </span>
+  {/if}
 </Label>
 
 <style>

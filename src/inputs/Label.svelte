@@ -15,6 +15,11 @@
   <div class="input-container">
     <slot />
   </div>
+  {#if $$slots.error}
+    <div class="error-container">
+      <slot name="error"></slot>
+    </div>
+  {/if}
 </label>
 
 <style>

@@ -1,38 +1,35 @@
 # Sculptor - Form
-A Svelte library for building Form UI's in a streamlined and simple way and using zod form input validation!
-
+A Svelte library for building HTML Forms with built in validation and error reporting
 
 ## Quick example
 ```svelte
 <script lang="ts">
-	import { Form, z } from '@sculptor/form';
-
-	const schema = z.object({
-		username : z.string(),
-		password : z.string(),
-		keepSignedIn : z.boolean().default(false)
-	});
+  import { Form, z } from '@sculptor/form';
+  const schema = z.object({
+	username : z.string(),
+	password : z.string(),
+	keepSignedIn : z.boolean().default(false)
+});
 </script>
 
 <Form 
-	action="http://myapi.localhost:4000/login" 
-	{schema}
-	on:submitSuccess={(loginResponse) => {
-		alert("Login was successfull!");
-	}}	
+  action="http://myapi.localhost:4000/login" 
+  {schema}
+  on:submitSuccess={(loginResponse) => {
+    alert("Login was successfull!");
+  }}	
 >
+  <h1> Simple login form! </h1>
 	
-	<h1> Simple login form! </h1>
-	
-	<TextInput label="username" name="username" />
-	<PasswordInput label="password" name="password" />
-	<CheckboxInput label="keep signed in?" name="keepSignedIn" />
+  <TextInput label="username" name="username" />
+  <PasswordInput label="password" name="password" />
+  <CheckboxInput label="keep signed in?" name="keepSignedIn" />
 
-	<SubmitButton> login </SubmitButton>
+  <SubmitButton> login </SubmitButton>
 </Form>
 ```
 It might not appear much but the script, as is, is performing the following tasks:
-1. Building a form
+1. Building a form (duh~)
 2. Adding validation to each of the inputs based on our schema (generated with zod)
 3. Sending the payload with username, password and keepSignedIn to "http://myapi.localhost:4000/login"
 4. Calling the function "submitSuccess" when the api endpoint returns a reponse within the 200 range
@@ -60,19 +57,33 @@ Keep in mind the following as it may be a no-go:
 4. I18n and A11y are considered "desired features" but the current developer has little knowledge in such areas, therefore the implementation lacks such features 
 
 ## Examples 
-
-### More examples
-
-- **Native Behaviour**, only styling / component composition:
-- **Nested Form**, useful when dealing with data structures that have nested objects
-- **Input Arrays**, useful when dealing with a input that can be repeated N amount of times
-- **Form Arrays**, useful when dealing with a data structure that can be repeated N amount of times
+- **Simple Login**, basic form + validation
+- **Native Behaviour**, form that uses the default browser behaviour for submitting
+- **Nested Form**, show how to express / build forms that have nested objects as data
+- **Input Arrays**, show how to express / build inputs that may have multiple values (arrays)
 
 ## Theming 
-By default the form uses the same general theme as the one used in "@sculptor/ui" but most of it can be controller through 
-css variables;
-Some of these varibales are more broadbly used and dont hold the component name as a prefix:
+By default the form uses the same general theme as the one used in "@sculptor/ui" and can be controlled through css variables;
 
-Others apply only to a specific component and carry the component name as a prefix:
+Most of them are component specific but some are used as a more general setting across components, such as:
+
 
 ## Components
+
+### Form
+
+### Nested Form
+
+### Form Array
+
+### Text (input)
+
+### Password (input)
+
+### Checkbox (input)
+
+## Classes
+
+### Form Controller
+
+## 
