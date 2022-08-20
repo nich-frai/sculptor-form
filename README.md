@@ -1,30 +1,8 @@
 # Sculptor - Form
-
 A Svelte library for building Form UI's in a streamlined and simple way and using zod form input validation!
 
-## Goals
-- Be as close as writing HTML as possible (great DX)
-- Ensure a data schema / integrity using Zod (please use a backend IO validation aswell!)
-- Simplify reporting validation error to users 
-- Allow sub-formsas a way to express nested data 
-- Allow a "multiple" mechanism where the same form OR input model can be added / removed as a way to express arrays
-- Allow full customization of the looks and feels
 
-## Want to have but lacks the knowledge
-- Acessibility
-- i18n
-
-## Warnings
-This library is open source and open to contribution, everyone is free to make suggestions, fixes, PRs and so forth!  
-**BUT** as of now its a single man project and not suited for production!
-There are of now also some things that may be a no-go:
-1. It's suited for feature rich applications where initial load time is not such a valuable metric, therefore it's not optmized for bundle size or treeshaking capabilities (there's some coupling between elements to work properly)
-2. It uses some experimental features from Svelte that might change in the future and possibly break this library (e.g Generic Components)
-3. The developer has little to no experience with acessibility and internationalization, most of what I make are tools to improve my daily life struggles so these are not subjects in which i spend a lot of time researching!
-
-## Examples 
-
-### Quick example
+## Quick example
 ```svelte
 <script lang="ts">
 	import { Form, z } from '@sculptor/form';
@@ -59,6 +37,29 @@ It might not appear much but the script, as is, is performing the following task
 3. Sending the payload with username, password and keepSignedIn to "http://myapi.localhost:4000/login"
 4. Calling the function "submitSuccess" when the api endpoint returns a reponse within the 200 range
 5. Blocking the submit button when a request/response is ongoing or ater a request has timedout (10s by default)
+
+## Goals
+- Be as close as writing HTML as possible (improved DX)
+- Ensure a data schema / integrity using Zod (please use a backend IO validation!)
+- Simplify reporting validation error to users 
+- Nested form as a way to express nested data 
+- Generate multiple forms from a template as a way to express array of objects 
+- Generatemultiple inputs from a template as a way to express array of values
+- Customize the theme and layout of form disposition
+
+## Want to have but lacks the knowledge
+- Acessibility
+- i18n
+
+## Warnings
+This library is open source and open to contribution, everyone is free to make suggestions, fixes, PRs and so forth **BUT** as of now its a single man project and not suited for production!
+Keep in mind the following as it may be a no-go:
+1. It's suited for feature rich applications where initial load time is not such a valuable metric, therefore it's not optmized for bundle size or treeshaking capabilities (there's some coupling between elements so they can work properly)
+2. It uses some experimental features from Svelte that might change in the future and possibly break this library (e.g Generic inside Components $$);
+3. It uses some CSS properties that are somewhat new, even if now whithout IE 11 the compatibility across browser are not such an issue you should test the styling in the targeted devices you intend to deploy!
+4. I18n and A11y are considered "desired features" but the current developer has little knowledge in such areas, therefore the implementation lacks such features 
+
+## Examples 
 
 ### More examples
 
