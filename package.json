@@ -4,7 +4,10 @@
 	"main": "src/index.ts",
 	"types": "src/index.ts",
 	"scripts": {
-		"example:login": "vite dev --config vite.config.ts ./examples/login"
+		"example:login": "vite dev --config vite.config.ts ./examples/login",
+		"story:dev": "histoire dev",
+    "story:build": "histoire build",
+    "story:preview": "histoire preview"
 	},
 	"devDependencies": {
 		"@sveltejs/vite-plugin-svelte": "^1.0.1",
