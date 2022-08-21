@@ -44,7 +44,16 @@
     controller = new FormController<T>();
   }
   const lockStore = controller.lockStore;
-  $: submitting = $lockStore;
+	/**
+	 * Submitting
+	 * ----------
+	 * Boolean indicator that the form is ongoing a "submit" process
+	 * corresponds to the form "locked" state, while the form is being submitted
+	 * no other submit events are processed, the submit lock expires after the desired timeout
+	 * (defaults to 10 seconds)
+	 */
+	let submitting : boolean;
+  $:submitting = $lockStore;
 
   setContext("form-controller", controller);
 
@@ -57,6 +66,7 @@
         controller.valueStore = value;
       } else {
         controller.valueStore!.set(value);
+				console.log('Value set:', value);
       }
     }
 
@@ -76,6 +86,8 @@
     }
 
     controller.formElement = formEl;
+
+		controller.initializeFields();
 
     return () => {
       // destroy form ?

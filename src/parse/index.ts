@@ -6,7 +6,7 @@ export const formParser = {
 		return z.preprocess((v) => {
 			let parseBool = Boolean(v);
 			if(typeof parseBool !== "boolean") {
-				throw new TypeError('Value is not a valid number!');
+				throw new TypeError('Value is not a valid boolean!');
 			}
 			return parseBool;
 		}, z.boolean(...params));

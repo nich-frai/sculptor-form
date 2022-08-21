@@ -1,18 +1,19 @@
 import { writable, type Writable } from "svelte/store";
 import { ZodError, type SomeZodObject, type TypeOf, type SafeParseReturnType } from "zod";
+import type { FieldController } from "./inputs/field.controller";
 
 export class FormController<
 	T extends SomeZodObject | undefined = undefined,
 	Data = T extends NonNullable<T> ? TypeOf<T> : unknown
 	> {
 
-	private fields: Record<string, FieldObservable> = {};
+	private fields: Record<string, FieldController> = {};
 	private submitLock: boolean = false;
 	private lockTimeoutID: number | undefined = undefined;
 
 	public lockTimeout?: number;
-	public lockStore : Writable<boolean> = writable(false);
-	
+	public lockStore: Writable<boolean> = writable(false);
+
 	public method?: string;
 	public enctype?: TFormEncType;
 	public schema?: T;
@@ -40,27 +41,25 @@ export class FormController<
 
 		// clear up form validity state
 		for (let input of Object.values(this.fields)) {
-			input.setValidity('');
+			input.removeErrors();
 		}
 
 		// if the "native" behaviour is set OR no "onSubmit" exists, just submit it using the default event
 		if (this.nativeBehaviour || this.onSubmit == null) {
-			console.log(this.nativeBehaviour, this.onSubmit);
 			this.formElement!.submit();
 			this.unlock();
 			return;
 		}
 
 		// collect and parse form data
-		const data = this.collectDataFromFields();
-
+		const data = await this.collectDataFromFields();
 		const parsed = this.parseObject(data);
 
 		// validation / parsing error, halt and notify!
 		if (!parsed.success) {
 			this.notifySchemaParsingIssues(parsed.error);
 			this.unlock();
-			return;
+			return false;
 		}
 
 		const parsedData = parsed.data;
@@ -88,7 +87,7 @@ export class FormController<
 		return;
 	}
 
-	addField(observable: FieldObservable) {
+	addField(observable: FieldController) {
 		this.fields[observable.name] = observable;
 	}
 
@@ -96,13 +95,13 @@ export class FormController<
 		delete this.fields[name];
 	}
 
-	collectDataFromFields() {
+	async collectDataFromFields() {
 		let collectedData: Record<string, unknown> = {};
 
-		Object.entries(this.fields).forEach(([name, field]) => {
-			collectedData[name] = field.collect();
-		});
-		console.log(collectedData);
+		for (let field of Object.values(this.fields)) {
+			collectedData[field.name] = await field.collect();
+		}
+
 		return collectedData;
 	}
 
@@ -110,7 +109,7 @@ export class FormController<
 
 		// check for individual input validity state
 		for (let field of Object.values(this.fields)) {
-			let isValid = field.checkValidityState();
+			let isValid = field.hasErrors();
 			if (!isValid) {
 				return {
 					success: false,
@@ -131,7 +130,7 @@ export class FormController<
 	}
 
 	notifySchemaParsingIssues(errors: ZodError<any>) {
-		console.debug('[FORM] Failed to parse input data!', errors.issues);
+		console.debug('[FORM] Failed to parse input data!', errors);
 		// call user listener for patsingErrors
 		if (this.onParsingError != null) {
 			this.onParsingError(errors);
@@ -139,16 +138,37 @@ export class FormController<
 
 		// go trough issues and dispatch errors to fields
 		for (let issue of errors.issues) {
-			console.debug(issue);
 			let fieldsWithError = issue.path;
 			let errorMessage = issue.message;
-			console.log(fieldsWithError, errorMessage);
 			for (let fieldName of fieldsWithError) {
 				if (this.fields[fieldName] != null) {
-					this.fields[fieldName].setValidity(errorMessage);
+					this.fields[fieldName].addError(errorMessage);
 				}
 			}
 		}
+	}
+
+	getInputValue(name: string) {
+		let returnValue = "";
+		this.valueStore?.subscribe((v) => {
+			if (typeof v === 'object' && v != null) {
+				returnValue = String((v as any)[name] ?? "");
+			}
+		});
+
+		return returnValue;
+	}
+
+	async initializeFields() {
+		this.valueStore?.subscribe((v) => {
+			if(v != null) {
+				for(let [key, value] of Object.entries(v)) {
+					if(this.fields[key] != null) {
+						this.fields[key].setValue(value);
+					}
+				}
+			}
+		});
 	}
 
 	/**
@@ -237,57 +257,4 @@ export function createActionForTargetURL(url: string, requestInit?: RequestInit)
 		});
 	};
 
-}
-
-export function bindFieldToFormController(
-	fieldName: string,
-	getInput: () => HTMLInputElement,
-	controller: FormController,
-	initialValue: string
-) {
-
-	// # Hate this, please fix this awful API! 
-	/**
-	 *  Event if we "preventDefault" behaviour of the onSubmit event the validation STILL takes place
-	 * therefore we cannot check at the form level for validation errors and set/clear them accodingly
-	 * we need to listen for changes and update the validation state everytime the user change the input
-	 *  Was hoping to centralize this as a Form responsability, since it's the one who holds our validation schema
-	 * but I can't! Does anyone know the "will-validate" event so i can prevent its default behaviour and trigger
-	 * error reporting proramatically? invalid is "too late"
-	 */
-	getInput().addEventListener('input', (e) => {
-		getInput().setCustomValidity('');
-	});
-
-	controller.addField({
-		checkValidityState() {
-			return getInput().checkValidity();
-		},
-		collect() {
-			return getInput().value;
-		},
-		name: fieldName,
-		subscribe(sub) {
-			getInput().addEventListener("change", () => {
-				sub(getInput().value);
-			});
-		},
-		setValidity(err) {
-			getInput().setCustomValidity(err);
-			getInput().reportValidity();
-		}
-	});
-
-	// check for initial value
-	if (initialValue === "" && fieldName != null) {
-		let controllerValue = controller.valueStore;
-		controllerValue!.subscribe((v: any) => {
-			if (v == null || typeof v != "object") return;
-			if (v[fieldName] != null) getInput().value = v[fieldName];
-		})();
-	}
-
-	return () => {
-		controller.removeField(fieldName);
-	}
 }

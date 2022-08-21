@@ -1,26 +1,25 @@
 <script lang="ts">
   import "./open.props.css";
-  import {
-    CheckboxInput,
-    Form,
-    PasswordInput,
-    SubmitButton,
-    TextInput,
-		z
-  } from "@sculptor/form";
+  import { CheckboxInput, Form, PasswordInput, SubmitButton, TextInput, z } from "@sculptor/form";
 
   const loginSchema = z.object({
-    username: z.string().min(6).regex(/^[0-9A-Za-z.]+$/, "Username may only contain letters (upper or lowercase), numbers or a dot \".\"!"),
-		password : z.string().min(6),
-		keepLoggedIn : z.boolean().default(false),
+    username: z
+      .string()
+      .min(6)
+      .regex(
+        /^[0-9A-Za-z.]+$/,
+        'May contain only letters (upper or lowercase), numbers or a dot "."!',
+      ),
+    password: z.string().min(6),
+    keepLoggedIn: z.boolean().default(false),
   });
 
   let darkTheme: boolean = false;
   let accentColor: string = "#008081";
-	function sleep(time : number) {
-		return new Promise<void>((res) => setTimeout(res, time));
-	}
 
+  function sleep(time: number) {
+    return new Promise<void>((res) => setTimeout(res, time));
+  }
 </script>
 
 <main
@@ -33,16 +32,20 @@
   <section>
     <h1>Sculptor</h1>
     <h2>Login form example</h2>
-    <p>A simple demonstration of sculptor's capabilities using a login form</p>
     <p>This form should:</p>
-		<ul>
-			<li>Display 3 inputs for username, password and a checkbox indicating a "keep me signed in"</li>
-			<li>Validate username as : required, minimum of 6 letters, only alpha numeric chars and "."</li>
-			<li>Validate password as : required, minimum of 6 letters</li>
-			<li>Have the default value of keepLoggedIn as : false</li>
-			<li>Not fire any more events while the artificial delay of 2 seconds take place on submit</li>
-		</ul>
+    <ul>
+      <li>Display 3 inputs for username, password and a checkbox for "keep me signed in"</li>
+      <li>
+        Validate username as : required, minimum of 6 letters, only alpha numeric chars and "."
+      </li>
+      <li>Validate password as : required, minimum of 6 letters</li>
+      <li>Have the default value of keepLoggedIn as : false</li>
+      <li>Have the default value of username as : default.user</li>
+      <li>Not fire any more events while the artificial delay of 2 seconds take place on submit</li>
+    </ul>
 
+    <h3>Options:</h3>
+    <TextInput label="change accent color" bind:value={accentColor} />
     <label>
       <input type="checkbox" bind:checked={darkTheme} /> dark theme ?
     </label>
@@ -51,28 +54,20 @@
   <section class="form-box">
     <Form
       schema={loginSchema}
-      value={{ username: "form default username", password : "", keepLoggedIn : false}}
+      value={{ username: "default.user", password: "", keepLoggedIn: false }}
       action={async (data) => {
         // Artifical delay of 2 seconds
-				await sleep(2000);
+        await sleep(2000);
         alert("Login with: " + JSON.stringify(data));
       }}
-			let:submitting
+      let:submitting
     >
       <h2>Authenticate!</h2>
-      <TextInput
-        label="username"
-        name="username"
-        placeholder="insert your username!"
-      />
+      <TextInput label="username" name="username" placeholder="insert your username!" />
       <PasswordInput label="password" name="password" placeholder="********" />
-      <CheckboxInput
-        label="keep you signed in?"
-        name="keepLoggedIn"
-        value="true"
-      />
+      <CheckboxInput label="keep you signed in?" name="keepLoggedIn" value="true" />
       <br />
-      <SubmitButton>{submitting ? 'submitting!' : 'login!'}</SubmitButton>
+      <SubmitButton>{submitting ? "submitting!" : "login!"}</SubmitButton>
     </Form>
   </section>
 </main>
@@ -89,7 +84,10 @@
     grid-template-columns: 1fr 1fr;
     align-items: center;
     justify-items: center;
+    accent-color: var(--accent);
     --submit-button-bg-color: var(--accent);
+    --color-primary: var(--accent);
+    --transition-duration: 250ms;
   }
   h1,
   h2 {
@@ -138,6 +136,22 @@
     --surface-2: var(--gray-8);
     --surface-3: var(--gray-7);
     --surface-4: var(--gray-6);
+    --color-error: #e7405c;
     color-scheme: dark;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    main {
+      --link: var(--indigo-3);
+      --link-visited: var(--grape-3);
+      --text-1: var(--gray-1);
+      --text-2: var(--gray-4);
+      --surface-1: var(--gray-9);
+      --surface-2: var(--gray-8);
+      --surface-3: var(--gray-7);
+      --surface-4: var(--gray-6);
+      --color-error: #e7405c;
+      color-scheme: dark;
+    }
   }
 </style>
