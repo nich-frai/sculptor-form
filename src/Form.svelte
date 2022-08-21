@@ -66,7 +66,6 @@
         controller.valueStore = value;
       } else {
         controller.valueStore!.set(value);
-				console.log('Value set:', value);
       }
     }
 

@@ -5,6 +5,7 @@
 	"types": "src/index.ts",
 	"scripts": {
 		"example:login": "vite dev --config vite.config.ts ./examples/login",
+		"example:personal_info": "vite dev --config vite.config.ts ./examples/personal_info",
 		"story:dev": "histoire dev",
     "story:build": "histoire build",
     "story:preview": "histoire preview"
