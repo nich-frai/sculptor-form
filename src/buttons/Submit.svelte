@@ -11,7 +11,7 @@
   button {
     position: relative;
     width: var(--submit-button-width, var(--button-width, 100%));
-    height: var(--submit-button-height, var(--button-height, 2.5rem));
+    height: var(--submit-button-height, var(--button-height, auto));
     padding: var(
       --submit-button-padding,
       var(--button-padding, 0.5rem 0.75rem)
@@ -21,6 +21,7 @@
     border: 0;
     border-radius: var(--submit-button-radius, var(--button-radius, 4px));
 		background-color: var(--submit-button-bg-color, var(--button-bg-color, var(--surface-4, rgba(0,0,0,0.2))));
+		color: var(--submit-button-text-color, var(--button-text-color, var(--text-on-surface, black)));
 		filter: brightness(100%);
 		cursor: pointer;
   }
